@@ -1,20 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const dbName = 'demo_pdms852';
 
 export default function App() {
-  const [url, setUrl] = useState('https://ymwa.deliverysoftware.co.uk/set-pdms-db/demo_pdms852');
+  const [url, setUrl] = useState('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
 
   const injectedJavaScript = `
   (function() {
     // If ReactNativeWebView exists
     if (window.ReactNativeWebView) {
-      // Listen for the successfulRegistration event
-      window.addEventListener('successfulRegistration', function(event) {
-        // Post the message to React Native
-        window.ReactNativeWebView.postMessage(JSON.stringify(event.detail));
+      window.addEventListener('speakToMobileApp', function(event) {
+        if(event.detail.type === 'setCustomerCode') {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: event.detail.type,
+            customerCode: event.detail.customerCode
+          }));
+        }
+        else if(event.detail.type === 'clearLocalAndRemoteSession')
+        {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: event.detail.type
+          }));  
+        }
       });
     }else{
       alert('ReactNativeWebView not found, unable to speak to React Native');
@@ -22,16 +33,27 @@ export default function App() {
   })();
 `;
   const handleMessage = async (event) => {
-    let customerId = JSON.parse(event.nativeEvent.data);
-    await AsyncStorage.setItem('customerId', customerId);
+    let message = JSON.parse(event.nativeEvent.data);
+
+    if (message.type === 'setCustomerCode') {
+      await AsyncStorage.setItem('customerCode', message.customerCode);
+    }
+    else if (message.type === 'clearLocalAndRemoteSession') {
+      setUrl('https://ymwa.deliverysoftware.co.uk/request/forget');
+      await AsyncStorage.clear();
+    }
   };
 
-  // If app is loaded and already has customerId, then change the source of the webview
-  AsyncStorage.getItem('customerId').then((customerId) => {
-    if (customerId !== null) {
-      setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/demo_pdms852/' + customerId);
-    }
-  });
+  // If app is loaded and already has customerCode, then change the source of the webview
+  useEffect(() => {
+    AsyncStorage.getItem('customerCode').then((customerCode) => {
+      if (customerCode !== null) {
+        setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/' + dbName + '/' + customerCode);
+      } else {
+        setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
+      }
+    });
+  }, []); // Empty dependency array means this effect runs once when component mounts
 
   return (
     <View style={{ width: '100%', height: '100%', backgroundColor: '#EEEEEE' }}>
