@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "GemDaries",
+    "name": "Gem Dairies",
     "slug": "GemDaries",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#EEEEEE"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ed1c52"
       },
-      "package": "com.deliverysoftware.gemdaries"
+      "package": "com.deliverysoftware.gemdairies"
     },
     "web": {
       "favicon": "./assets/favicon.png"

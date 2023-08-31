@@ -1,17 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { StatusBar , View, Text, Image } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
   const dbName = "demo_pdms852";
+  const primaryColor = "#ed1c52";
   const [url, setUrl] = useState('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
+  const [isConnected, setIsConnected] = useState(true);
 
   const injectedJavaScript = `
   (function() {
     // App mode
     window.appMode = 'mobile';
+    window.appVersion = '0.0.1'; // When updating, also update app.json version
+    window.primaryColor = '${primaryColor}';
 
     // If ReactNativeWebView exists
     if (window.ReactNativeWebView) {
@@ -39,57 +43,72 @@ export default function App() {
   const handleMessage = async (event) => {
     let message = JSON.parse(event.nativeEvent.data);
 
-    // Set customer code in local storage
     if (message.type === 'setCustomerCode') {
       await AsyncStorage.setItem('customerCode', message.customerCode);
-    }
-    // Clear local and remote session
-    else if (message.type === 'clearLocalAndRemoteSession') {
+    } else if (message.type === 'clearLocalAndRemoteSession') {
       setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
       await AsyncStorage.clear();
-      alert('Unlinked your YourMoon account from this device.');
+      alert('Unlinked your Your account from this device.');
     }
   };
 
-  // If app is loaded and already has customerCode, then change the source of the webview
   useEffect(() => {
     AsyncStorage.getItem('customerCode').then((customerCode) => {
       if (customerCode !== null) {
         setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/' + dbName + '/' + customerCode);
-      } else {
-        setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
       }
     });
-  }, []); // Empty dependency array means this effect runs once when component mounts
+  }, []);
 
-  // Render the error view if the webview fails to load (This may happen if A. The user is offline or B. The server is down)
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // In case for some reason the status bar is not set correctly
+  useEffect(() => {
+    setTimeout(() => {
+      StatusBar.setBarStyle('light-content');
+      StatusBar.setBackgroundColor(primaryColor, true);
+    }, 500);
+  }, []);
+
   const renderErrorView = () => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ marginBottom: 20 }}>Oops! Something went wrong.</Text>
-        <Text style={{ marginBottom: 20 }}>Please check your Internet connection or try again later.</Text>
-        <Button title="Restart App" onPress={() => setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName)} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
+        <Text style={{ marginBottom: 20, textAlign: 'center', fontSize: 22 }}>Must be connected to the internet to link to your YourMoo account.</Text>
+        <Image source={require('./assets/myrtle.png')} style={{  marginBottom: 30 }} />
+        <Text style={{ marginBottom: 20, textAlign: 'center', fontSize: 18, paddingHorizontal: 20 }}>Please check your Internet connection or try again later.</Text>
       </View>
     );
   };
 
   return (
     <View style={{ width: '100%', height: '100%', backgroundColor: '#EEEEEE' }}>
-      <StatusBar style="light" backgroundColor={"#ed1c52"} translucent={false} />
-      <WebView
-        originWhitelist={['http://*', 'https://*', 'about:srcdoc']}
-        source={{ uri: url }}
-        scrollEnabled={true}
-        setBuiltInZoomControls={false}
-        setDisplayZoomControls={false}
-        style={{ width: '100%', resizeMode: 'contain' }}
-        injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-        onMessage={handleMessage}
-        cacheEnabled={false}
-        javaScriptEnabled={true}
-        onError={() => renderErrorView()}
-        renderError={renderErrorView}
+      <StatusBar barStyle="light-content" backgroundColor={primaryColor || '#ed1c52'} animated={true} />
+      { isConnected ? (
+        <WebView
+          originWhitelist={['http://*', 'https://*', 'about:srcdoc']}
+          source={{ uri: url }}
+          scrollEnabled={true}
+          setBuiltInZoomControls={false}
+          setDisplayZoomControls={false}
+          style={{ width: '100%', resizeMode: 'contain' }}
+          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          onMessage={handleMessage}
+          cacheEnabled={false}
+          javaScriptEnabled={true}
+          onError={renderErrorView}
+          renderError={renderErrorView}
         />
+      ) : (
+        renderErrorView()
+      )}
     </View>
   );
 }
