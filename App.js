@@ -4,13 +4,15 @@ import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 
-const dbName = 'demo_pdms852';
-
 export default function App() {
+  const dbName = "demo_pdms852";
   const [url, setUrl] = useState('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
 
   const injectedJavaScript = `
   (function() {
+    // App mode
+    window.appMode = 'mobile';
+
     // If ReactNativeWebView exists
     if (window.ReactNativeWebView) {
       window.addEventListener('speakToMobileApp', function(event) {
@@ -32,15 +34,20 @@ export default function App() {
     }
   })();
 `;
+
+  // Messages from web view
   const handleMessage = async (event) => {
     let message = JSON.parse(event.nativeEvent.data);
 
+    // Set customer code in local storage
     if (message.type === 'setCustomerCode') {
       await AsyncStorage.setItem('customerCode', message.customerCode);
     }
+    // Clear local and remote session
     else if (message.type === 'clearLocalAndRemoteSession') {
-      setUrl('https://ymwa.deliverysoftware.co.uk/request/forget');
+      setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
       await AsyncStorage.clear();
+      alert('Unlinked your YourMoon account from this device.');
     }
   };
 
@@ -55,9 +62,20 @@ export default function App() {
     });
   }, []); // Empty dependency array means this effect runs once when component mounts
 
+  // Render the error view if the webview fails to load (This may happen if A. The user is offline or B. The server is down)
+  const renderErrorView = () => {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ marginBottom: 20 }}>Oops! Something went wrong.</Text>
+        <Text style={{ marginBottom: 20 }}>Please check your Internet connection or try again later.</Text>
+        <Button title="Restart App" onPress={() => setUrl('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName)} />
+      </View>
+    );
+  };
+
   return (
     <View style={{ width: '100%', height: '100%', backgroundColor: '#EEEEEE' }}>
-      <StatusBar style="light" backgroundColor="#1F80E4" translucent={false} />
+      <StatusBar style="light" backgroundColor={"#ed1c52"} translucent={false} />
       <WebView
         originWhitelist={['http://*', 'https://*', 'about:srcdoc']}
         source={{ uri: url }}
@@ -67,6 +85,10 @@ export default function App() {
         style={{ width: '100%', resizeMode: 'contain' }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
         onMessage={handleMessage}
+        cacheEnabled={false}
+        javaScriptEnabled={true}
+        onError={() => renderErrorView()}
+        renderError={renderErrorView}
         />
     </View>
   );
