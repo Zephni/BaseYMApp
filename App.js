@@ -1,43 +1,50 @@
-import { StatusBar , View, Text, Image } from 'react-native';
+import { StatusBar , View, Text, Image, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function App() {
   const dbName = "demo_pdms852";
   const primaryColor = "#ed1c52";
   const [url, setUrl] = useState('https://ymwa.deliverysoftware.co.uk/set-pdms-db/' + dbName);
   const [isConnected, setIsConnected] = useState(true);
+  const webViewRef = useRef(null);
 
   const injectedJavaScript = `
-  (function() {
-    // App mode
-    window.appMode = 'mobile';
-    window.appVersion = '0.0.1'; // When updating, also update app.json version
-    window.primaryColor = '${primaryColor}';
+    (function() {
+      // App mode
+      window.appMode = 'mobile';
+      window.appVersion = '0.0.1'; // When updating, also update app.json version
+      window.primaryColor = '${primaryColor}';
 
-    // If ReactNativeWebView exists
-    if (window.ReactNativeWebView) {
-      window.addEventListener('speakToMobileApp', function(event) {
-        if(event.detail.type === 'setCustomerCode') {
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: event.detail.type,
-            customerCode: event.detail.customerCode
-          }));
+      // If ReactNativeWebView exists
+      if (window.ReactNativeWebView) {
+        window.addEventListener('speakToMobileApp', function(event) {
+          window.ReactNativeWebView.postMessage(JSON.stringify(event.detail));
+        });
+      } else {
+        alert('ReactNativeWebView not found, unable to speak to React Native');
+      }
+
+      window.messageFromMobileApp = function(messageString) {
+        try {
+          const message = JSON.parse(messageString);
+          if (message.type === 'navigate') {
+            if(window.app && window.router) {
+              window.router.push(message.route);
+            } else {
+              alert('Unable to navigate to ' + message.route);
+            }
+          } else {
+            alert('Unknown message type from React Native: ' + message.type);
+          }
+        } catch (error) {
+          alert('Failed to parse or handle message from React Native:' + error);
         }
-        else if(event.detail.type === 'clearLocalAndRemoteSession')
-        {
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: event.detail.type
-          }));  
-        }
-      });
-    }else{
-      alert('ReactNativeWebView not found, unable to speak to React Native');
-    }
-  })();
-`;
+      }    
+    })();
+  `;
 
   // Messages from web view
   const handleMessage = async (event) => {
@@ -49,6 +56,12 @@ export default function App() {
       setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
       await AsyncStorage.clear();
       alert('Unlinked your Your account from this device.');
+    } else if (message.type == 'quit') {
+      try {
+        BackHandler.exitApp();
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
@@ -78,6 +91,32 @@ export default function App() {
     }, 500);
   }, []);
 
+  // Back handling and useEffect
+  const handleNavigationStateChange = (navState) => {
+    
+  };
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      if (webViewRef.current) {
+        const script = `
+          messageFromMobileApp('${JSON.stringify({
+            type: 'navigate',
+            route: '/dashboard'
+          })}');
+        `;
+        webViewRef.current.injectJavaScript(script);
+      }
+      return true;
+    };
+  
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+  
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  });
+
   const renderErrorView = () => {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
@@ -93,16 +132,19 @@ export default function App() {
       <StatusBar barStyle="light-content" backgroundColor={primaryColor || '#ed1c52'} animated={true} />
       { isConnected ? (
         <WebView
-          originWhitelist={['http://*', 'https://*', 'about:srcdoc']}
+          ref={webViewRef}
+          // originWhitelist={['http://*', 'https://*', 'about:srcdoc']}
+          originWhitelist={["*"]}
           source={{ uri: url }}
           scrollEnabled={true}
           setBuiltInZoomControls={false}
           setDisplayZoomControls={false}
           style={{ width: '100%', resizeMode: 'contain' }}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-          onMessage={handleMessage}
           cacheEnabled={false}
           javaScriptEnabled={true}
+          onNavigationStateChange={handleNavigationStateChange}
+          onMessage={handleMessage}
           onError={renderErrorView}
           renderError={renderErrorView}
         />

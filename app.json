@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Gem Dairies",
-    "slug": "GemDaries",
-    "version": "0.0.1",
+    "slug": "GemDairies",
+    "version": "0.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deliverysoftware.gemdairies"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "9febb797-971e-493c-88bb-21a4a4ae09c3"
+        "projectId": "51c3163c-81f5-4747-aa68-08919a98e399"
       }
     }
   }
