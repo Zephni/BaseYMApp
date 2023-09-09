@@ -4,17 +4,18 @@ import { BackHandler } from 'react-native';
 export const handleMessage = async (event, setUrl) => {
     let message = JSON.parse(event.nativeEvent.data);
 
-    if (message.type === 'setCustomerCode') {
+    if (message.type === 'setCustomerCodeAndHashedPassword') {
         await AsyncStorage.setItem('customerCode', message.customerCode);
+        await AsyncStorage.setItem('hashedPassword', message.hashedPassword);
     } else if (message.type === 'clearLocalAndRemoteSession') {
         setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
         await AsyncStorage.clear();
         alert('Unlinked your Your account from this device.');
     } else if (message.type == 'quit') {
         try {
-        BackHandler.exitApp();
+            BackHandler.exitApp();
         } catch (error) {
-        alert(error);
+            alert(error);
         }
     }
     };

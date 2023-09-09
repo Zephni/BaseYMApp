@@ -17,9 +17,14 @@ export default function App() {
   const webViewRef = useRef(null);
 
   useEffect(() => {
-    AsyncStorage.getItem('customerCode').then((customerCode) => {
-      if (customerCode !== null) {
-        setUrl(`https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/${dbName}/${customerCode}`);
+    AsyncStorage.multiGet(['customerCode', 'hashedPassword']).then((data) => {
+      const customerCode = data[0][1];
+      const hashedPassword = data[1][1];
+      
+      if (customerCode !== null && hashedPassword !== null) {
+        setUrl(`https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/${dbName}/${customerCode}/${hashedPassword}`);
+      } else {
+        alert('Customer code and password not found, please login');
       }
     });
   }, []);
