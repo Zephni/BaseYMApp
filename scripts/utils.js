@@ -4,8 +4,8 @@ import { BackHandler } from 'react-native';
 export const handleMessage = async (event, setUrl) => {
     let message = JSON.parse(event.nativeEvent.data);
 
-    if (message.type === 'setCustomerCodeAndHashedPassword') {
-        await AsyncStorage.setItem('customerCode', message.customerCode);
+    if (message.type === 'setCustomerEmailAndHashedPassword') {
+        await AsyncStorage.setItem('customerEmail', message.customerEmail);
         await AsyncStorage.setItem('hashedPassword', message.hashedPassword);
     } else if (message.type === 'clearLocalAndRemoteSession') {
         setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
