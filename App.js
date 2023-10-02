@@ -10,7 +10,7 @@ import { handleMessage, handleBackButton } from './scripts/utils.js';
 import { styles } from './scripts/styles.js';
 
 const dbName = "demo_pdms852";
-const primaryColor = "#ed1c52";
+window.primaryColor = '#FFFFFF'; // Should be set in handleMessage passed from web view with key: setPrimaryColor
 
 export default function App() {
   const [url, setUrl] = useState(`https://ymwa.deliverysoftware.co.uk/set-pdms-db/${dbName}`);
@@ -41,13 +41,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor(primaryColor, true);
-    }, 500);
-  }, []);
-
-  useEffect(() => {
     const handleBackPress = () => handleBackButton(webViewRef);
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
   
@@ -58,7 +51,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={primaryColor} animated={true} />
+      <StatusBar barStyle="light-content" backgroundColor="#FFFFFF" animated={true} />
       {(() => {
         // If connected has not yet been set
         if(isConnected == null)
@@ -91,7 +84,7 @@ export default function App() {
                 // App mode
                 window.appMode = 'mobile';
                 window.appVersion = '0.0.1'; // When updating, also update app.json version
-                window.primaryColor = '${primaryColor}';
+                window.device = '${Platform.OS}';
           
                 // If ReactNativeWebView exists
                 if (window.ReactNativeWebView) {
