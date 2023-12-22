@@ -16,7 +16,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.deliverysoftware.gemdairies"
+      "bundleIdentifier": "com.deliverysoftware.gemdairies",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "adaptiveIcon": {

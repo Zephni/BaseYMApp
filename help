@@ -4,3 +4,6 @@ npm start
 <!-- To build -->
 eas build -p android --profile development
 eas build -p android --profile production
+
+eas build -p ios --profile development
+eas build -p ios --profile production
