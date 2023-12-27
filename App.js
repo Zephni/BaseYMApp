@@ -21,7 +21,7 @@ export default function App() {
     AsyncStorage.multiGet(['customerEmail', 'hashedPassword']).then((data) => {
       const customerEmail = data[0][1];
       const hashedPassword = data[1][1];
-      
+
       if (customerEmail !== null && hashedPassword !== null) {
         setUrl(`https://ymwa.deliverysoftware.co.uk/set-pdms-db-and-linked-account/${dbName}/${customerEmail}/${hashedPassword}`);
       } else {
@@ -43,7 +43,7 @@ export default function App() {
   useEffect(() => {
     const handleBackPress = () => handleBackButton(webViewRef);
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-  
+
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
     };
@@ -51,21 +51,18 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#FFFFFF" animated={true} />
+      <StatusBar barStyle="light-content" backgroundColor="#CCCCCC" animated={true} />
       {(() => {
         // If connected has not yet been set
-        if(isConnected == null)
-        {
+        if (isConnected == null) {
           return <LoadingView />;
         }
         // If connection is false
-        else if(isConnected == false)
-        {
+        else if (isConnected == false) {
           return <ErrorView />;
         }
         // If connection is true
-        else if(isConnected == true)
-        {
+        else if (isConnected == true) {
           return (<WebView
             ref={webViewRef}
             originWhitelist={["*"]}

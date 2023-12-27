@@ -4,10 +4,11 @@ export const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#EEEEEE',
+        backgroundColor: 'rgb(231, 240, 244)',
     },
     webView: {
         width: '100%',
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        backgroundColor: 'rgb(231, 240, 244)',
     }
 });
