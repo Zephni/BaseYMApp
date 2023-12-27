@@ -80,7 +80,7 @@ export default function App() {
               (function() {
                 // App mode
                 window.appMode = 'mobile';
-                window.appVersion = '0.0.1'; // When updating, also update app.json version
+                window.appVersion = '1.0.0'; // When updating, also update app.json version
                 window.device = '${Platform.OS}';
           
                 // If ReactNativeWebView exists
@@ -90,23 +90,6 @@ export default function App() {
                   });
                 } else {
                   alert('ReactNativeWebView not found, unable to speak to React Native');
-                }
-          
-                window.messageFromMobileApp = function(messageString) {
-                  try {
-                    const message = JSON.parse(messageString);
-                    if (message.type === 'navigate') {
-                      if(window.app && window.router) {
-                        window.router.push(message.route);
-                      } else {
-                        alert('Unable to navigate to ' + message.route);
-                      }
-                    } else {
-                      alert('Unknown message type from React Native: ' + message.type);
-                    }
-                  } catch (error) {
-                    alert('Failed to parse or handle message from React Native:' + error);
-                  }
                 }    
               })();
             `}

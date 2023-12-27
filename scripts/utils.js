@@ -6,21 +6,21 @@ export const handleMessage = async (_event, setUrl) => {
 
     // setCustomerEmailAndHashedPassword
     if (message.type === 'setCustomerEmailAndHashedPassword') {
-            await AsyncStorage.setItem('customerEmail', message.customerEmail);
-            await AsyncStorage.setItem('hashedPassword', message.hashedPassword);
-    // clearLocalAndRemoteSession
+        await AsyncStorage.setItem('customerEmail', message.customerEmail);
+        await AsyncStorage.setItem('hashedPassword', message.hashedPassword);
+        // clearLocalAndRemoteSession
     } else if (message.type === 'clearLocalAndRemoteSession') {
         setUrl('https://ymwa.deliverysoftware.co.uk/request/forget/linked-account');
         await AsyncStorage.clear();
         alert('Unlinked your Your account from this device.');
-    // setPrimaryColor
+        // setPrimaryColor
     } else if (message.type === 'setPrimaryColor') {
         window.primaryColor = message.primaryColor;
 
         if (Platform.OS === 'android') {
             StatusBar.setBackgroundColor(window.primaryColor, true);
         }
-    // quit
+        // quit
     } else if (message.type == 'quit') {
         try {
             BackHandler.exitApp();
@@ -32,10 +32,11 @@ export const handleMessage = async (_event, setUrl) => {
 
 export const handleBackButton = (webViewRef) => {
     if (webViewRef.current) {
+        // MessageFromMovileApp is defined in the web view app.blade.php
         const script = `
         messageFromMobileApp('${JSON.stringify({
             type: 'navigate',
-            route: '/dashboard'
+            route: 'back'
         })}');
         `;
         webViewRef.current.injectJavaScript(script);
