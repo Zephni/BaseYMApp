@@ -1,6 +1,9 @@
 <!-- To run expo -->
 npm start
 
+<!-- Install eas cli -->
+npm install -g eas-cli
+
 <!-- To build -->
 eas build -p android --profile development
 eas build -p android --profile production
