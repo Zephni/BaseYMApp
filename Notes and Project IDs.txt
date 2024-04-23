@@ -3,6 +3,9 @@ Project setup
 Each app is in it's own branch, if a change is ever made in development branch, it must be
 merged into all other branches and each one then needs to run the build processes
 
+Each new project / branch will need /app.json changed to reflect the new name in multiple
+locations and new project ID (which is gotten from expo, where we first need to create the project)
+
 Project ID's
 --------------------------------------------------------
 gemanddairies: 51c3163c-81f5-4747-aa68-08919a98e399
