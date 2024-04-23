@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Gem Dairies",
-    "slug": "GemDairies",
+    "name": "Critchley and Son",
+    "slug": "CritchleyAndSon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.deliverysoftware.gemdairies",
+      "bundleIdentifier": "com.deliverysoftware.critchleyandson",
       "icon": "./assets/icon.png"
     },
     "android": {
@@ -24,14 +24,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ed1c52"
       },
-      "package": "com.deliverysoftware.gemdairies"
+      "package": "com.deliverysoftware.critchleyandson"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "51c3163c-81f5-4747-aa68-08919a98e399"
+        "projectId": "3bec14d7-e029-4869-9c20-41fdd41eeb42"
       }
     }
   }

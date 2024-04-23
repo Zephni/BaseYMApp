@@ -9,8 +9,8 @@ import LoadingView from './components/LoadingView.js';
 import { handleMessage, handleBackButton } from './scripts/utils.js';
 import { styles } from './scripts/styles.js';
 
-const dbName = "demo_pdms852";
-window.primaryColor = '#FFFFFF'; // Should be set in handleMessage passed from web view with key: setPrimaryColor
+const dbName = "pdms224";
+window.primaryColor = '#0074bd'; // Should be set in handleMessage passed from web view with key: setPrimaryColor
 
 export default function App() {
   const [url, setUrl] = useState(`https://ymwa.deliverysoftware.co.uk/set-pdms-db/${dbName}`);
