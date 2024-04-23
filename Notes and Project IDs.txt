@@ -1,0 +1,9 @@
+Project setup
+--------------------------------------------------------
+Each app is in it's own branch, if a change is ever made in development branch, it must be
+merged into all other branches and each one then needs to run the build processes
+
+Project ID's
+--------------------------------------------------------
+gemanddairies: 51c3163c-81f5-4747-aa68-08919a98e399
+critchleyandsons: 3bec14d7-e029-4869-9c20-41fdd41eeb42
