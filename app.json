@@ -14,6 +14,13 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "submit": {
+      "ios": {
+        "appleId": "craig@deliverysoftware.co.uk",
+        "appleTeamId": "XXPTD3J59G",
+        "ascAppId": "6474901696"
+      }
+    },
     "ios": {
       "buildNumber": "1.0.1",
       "supportsTablet": true,
