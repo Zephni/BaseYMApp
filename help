@@ -10,3 +10,6 @@ eas build -p android --profile production
 
 eas build -p ios --profile development
 eas build -p ios --profile production
+
+<!-- ios submit to apple developer website -->
+eas submit -p ios
