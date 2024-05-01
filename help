@@ -13,3 +13,15 @@ eas build -p ios --profile production
 
 <!-- ios submit to apple developer website -->
 eas submit -p ios
+
+<!-- eas.json -->
+"production": {
+    "android": {
+        "buildType": "apk"
+        or
+        "buildType": "app-bundle"
+    },
+    "ios": {
+        "image": "latest"
+    }
+}

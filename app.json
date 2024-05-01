@@ -34,7 +34,7 @@
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ed1c52"
+        "backgroundColor": "#0074bd"
       },
       "package": "com.deliverysoftware.critchleyandson"
     },
