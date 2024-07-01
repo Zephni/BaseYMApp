@@ -1,0 +1,23 @@
+/* BELOW IS INFO FROM APPLE WHEN FIRST SETTING UP PROVISIONAL PROFILE WHICH HAPPENS
+ * AUTOMATICALLY WHEN CHOOSING "Y" when asked "Generate a new Apple Provisioning Profile?"
+ * This happens because it will likely be set to the last client app we built for apple
+--------------------------------------------------------------------------------------------------------*/
+Project Credentials Configuration
+
+Project                   @zephni/critchleyandson
+Bundle Identifier         com.deliverysoftware.critchleyandson
+
+App Store Configuration 
+
+Distribution Certificate
+Serial Number             22AC551A2511DBE2AEF1C3BAC32BB1AB
+Expiration Date           Sat, 21 Dec 2024 11:48:30 UTC
+Apple Team                XXPTD3J59G (Delivery Software Ltd (Company/Organization))
+Updated                   4 months ago
+
+Provisioning Profile    
+Developer Portal ID       UHAHV2H963
+Status                    active
+Expiration                Sat, 21 Dec 2024 11:48:30 UTC
+Apple Team                XXPTD3J59G (Delivery Software Ltd (Company/Organization))
+Updated                   1 second ago
