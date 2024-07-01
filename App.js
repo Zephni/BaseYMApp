@@ -82,6 +82,9 @@ export default function App() {
                 window.appMode = 'mobile';
                 window.appVersion = '1.0.0'; // When updating, also update app.json version
                 window.device = '${Platform.OS}';
+
+                // dbname - We pass this to the webview as a backup in case session('PDMSDatabase') is lost in the webview
+                window.dbname = '${dbName}';
           
                 // If ReactNativeWebView exists
                 if (window.ReactNativeWebView) {
